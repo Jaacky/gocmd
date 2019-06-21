@@ -14,6 +14,10 @@ const (
 )
 
 func main() {
+	listContents()
+}
+
+func listContents() {
 	dropboxAccessToken := os.Getenv(DropboxAccessTokenEnv)
 	url := "https://api.dropboxapi.com/2/file_requests/list_v2"
 
