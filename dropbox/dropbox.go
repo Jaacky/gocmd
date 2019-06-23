@@ -5,6 +5,12 @@ import (
 	"io/ioutil"
 	"log"
 	"net/http"
+	"os"
+)
+
+const (
+	// DropboxAccessTokenEnv is the ENV var name for the Dropbox access token
+	DropboxAccessTokenEnv = "DROPBOX_ACCESS_TOKEN"
 )
 
 type requestListFolder struct {
@@ -21,6 +27,7 @@ func createNewRequestListFolder(path string, recursive bool) *requestListFolder 
 
 // ListContents lists out the contents of the Dropbox folder
 func ListContents() {
+	dropboxAccessToken := os.Getenv(DropboxAccessTokenEnv)
 	url := "https://api.dropboxapi.com/2/files/list_folder"
 
 	requestBody, err := json.Marshal(createNewRequestListFolder("", true))
@@ -28,7 +35,7 @@ func ListContents() {
 		log.Fatalln(err)
 	}
 
-	req := createRequest("POST", url, requestBody)
+	req := createRequest(dropboxAccessToken, "POST", url, requestBody)
 
 	// Send req using http Client
 	client := &http.Client{}
@@ -42,6 +49,7 @@ func ListContents() {
 }
 
 func createFolder() {
+	dropboxAccessToken := os.Getenv(DropboxAccessTokenEnv)
 	url := "https://api.dropboxapi.com/2/files/create_folder_v2"
 
 	requestBody, err := json.Marshal(map[string]string{
@@ -51,7 +59,7 @@ func createFolder() {
 		log.Fatalln(err)
 	}
 
-	req := createRequest("POST", url, requestBody)
+	req := createRequest(dropboxAccessToken, "POST", url, requestBody)
 
 	// Send req using http Client
 	client := &http.Client{}

@@ -4,19 +4,11 @@ import (
 	"bytes"
 	"log"
 	"net/http"
-	"os"
 )
 
-const (
-	// DropboxAccessTokenEnv is the ENV var name for the Dropbox access token
-	DropboxAccessTokenEnv = "DROPBOX_ACCESS_TOKEN"
-)
-
-func createRequest(method string, url string, requestBody []byte) *http.Request {
-	dropboxAccessToken := os.Getenv(DropboxAccessTokenEnv)
-
+func createRequest(accessToken string, method string, url string, requestBody []byte) *http.Request {
 	// Create a Bearer string by appending string access token
-	bearer := "Bearer " + dropboxAccessToken
+	bearer := "Bearer " + accessToken
 
 	// Create a new request using http
 	req, err := http.NewRequest(method, url, bytes.NewBuffer(requestBody))
