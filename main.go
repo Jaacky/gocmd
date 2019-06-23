@@ -17,13 +17,23 @@ func main() {
 	listContents()
 }
 
+type requestListFolder struct {
+	Path      string `json:"path"`
+	Recursive bool   `json:"recursive"`
+}
+
+func createNewRequestListFolder(path string, recursive bool) *requestListFolder {
+	return &requestListFolder{
+		Path:      path,
+		Recursive: recursive,
+	}
+}
+
 func listContents() {
 	dropboxAccessToken := os.Getenv(DropboxAccessTokenEnv)
-	url := "https://api.dropboxapi.com/2/file_requests/list_v2"
+	url := "https://api.dropboxapi.com/2/files/list_folder"
 
-	requestBody, err := json.Marshal(map[string]int{
-		"limit": 1000,
-	})
+	requestBody, err := json.Marshal(createNewRequestListFolder("", true))
 
 	if err != nil {
 		log.Fatalln(err)
