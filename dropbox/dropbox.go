@@ -1,17 +1,10 @@
 package dropbox
 
 import (
-	"bytes"
 	"encoding/json"
 	"io/ioutil"
 	"log"
 	"net/http"
-	"os"
-)
-
-const (
-	// DropboxAccessTokenEnv is the ENV var name for the Dropbox access token
-	DropboxAccessTokenEnv = "DROPBOX_ACCESS_TOKEN"
 )
 
 type requestListFolder struct {
@@ -27,24 +20,14 @@ func createNewRequestListFolder(path string, recursive bool) *requestListFolder 
 }
 
 func ListContents() {
-	dropboxAccessToken := os.Getenv(DropboxAccessTokenEnv)
 	url := "https://api.dropboxapi.com/2/files/list_folder"
 
 	requestBody, err := json.Marshal(createNewRequestListFolder("", true))
-
 	if err != nil {
 		log.Fatalln(err)
 	}
 
-	// Create a Bearer string by appending string access token
-	bearer := "Bearer " + dropboxAccessToken
-
-	// Create a new request using http
-	req, err := http.NewRequest("POST", url, bytes.NewBuffer(requestBody))
-
-	// add authorization header to the req
-	req.Header.Add("Authorization", bearer)
-	req.Header.Add("Content-Type", "application/json")
+	req := createRequest("POST", url, requestBody)
 
 	// Send req using http Client
 	client := &http.Client{}
@@ -58,26 +41,16 @@ func ListContents() {
 }
 
 func createFolder() {
-	dropboxAccessToken := os.Getenv(DropboxAccessTokenEnv)
 	url := "https://api.dropboxapi.com/2/files/create_folder_v2"
 
 	requestBody, err := json.Marshal(map[string]string{
 		"path": "/Test/Inside",
 	})
-
 	if err != nil {
 		log.Fatalln(err)
 	}
 
-	// Create a Bearer string by appending string access token
-	bearer := "Bearer " + dropboxAccessToken
-
-	// Create a new request using http
-	req, err := http.NewRequest("POST", url, bytes.NewBuffer(requestBody))
-
-	// add authorization header to the req
-	req.Header.Add("Authorization", bearer)
-	req.Header.Add("Content-Type", "application/json")
+	req := createRequest("POST", url, requestBody)
 
 	// Send req using http Client
 	client := &http.Client{}
