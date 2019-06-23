@@ -19,6 +19,7 @@ func createNewRequestListFolder(path string, recursive bool) *requestListFolder 
 	}
 }
 
+// ListContents lists out the contents of the Dropbox folder
 func ListContents() {
 	url := "https://api.dropboxapi.com/2/files/list_folder"
 
