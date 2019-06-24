@@ -48,6 +48,37 @@ func ListContents() {
 	log.Println(string([]byte(body)))
 }
 
+func UploadFile(filePath string) {
+	dropboxAccessToken := os.Getenv(DropboxAccessTokenEnv)
+	url := "https://content.dropboxapi.com/2/files/upload"
+
+	f, err := os.Open(filePath)
+	if err != nil {
+		log.Fatalf("Failed to open file to upload: %v", err)
+	}
+	defer f.Close()
+
+	req, err := http.NewRequest("POST", url, f)
+	if err != nil {
+		log.Fatalf("Error creating new HTTP request: %v", err)
+	}
+
+	bearer := "Bearer " + dropboxAccessToken
+	req.Header.Add("Authorization", bearer)
+	req.Header.Add("Dropbox-Api-Arg", "{\"path\": \"/testfileupload.txt\",\"mode\": \"overwrite\",	\"mute\": false,\"strict_conflict\": false}")
+	req.Header.Add("Content-Type", "application/octet-stream")
+
+	// Send req using http Client
+	client := &http.Client{}
+	resp, err := client.Do(req)
+	if err != nil {
+		log.Println("Error on response.\n[ERRO] -", err)
+	}
+
+	body, _ := ioutil.ReadAll(resp.Body)
+	log.Println(string([]byte(body)))
+}
+
 func createFolder() {
 	dropboxAccessToken := os.Getenv(DropboxAccessTokenEnv)
 	url := "https://api.dropboxapi.com/2/files/create_folder_v2"
