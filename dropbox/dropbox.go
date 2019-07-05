@@ -48,6 +48,7 @@ func ListContents() {
 	log.Println(string([]byte(body)))
 }
 
+// UploadFile uploads the file at filePath to Dropbox
 func UploadFile(filePath string) {
 	dropboxAccessToken := os.Getenv(DropboxAccessTokenEnv)
 	url := "https://content.dropboxapi.com/2/files/upload"
