@@ -48,6 +48,21 @@ func ListContents() {
 	log.Println(string([]byte(body)))
 }
 
+// UploadFileResponse is the response that Dropbox returns after uploading a file
+// This is not an exhaustive list of all the fields that is in the response
+type UploadFileResponse struct {
+	ClientModified string `json:"client_modified"`
+	ContentHash    string `json:"content_hash"`
+	ID             string `json:"id"`
+	IsDownloadable bool   `json:"is_downloadable"`
+	Name           string `json:"name"`
+	PathDisplay    string `json:"path_display"`
+	PathLower      string `json:"path_lower"`
+	Rev            string `json:"rev"`
+	ServerModified string `json:"server_modified"`
+	Size           uint64 `json:"size"`
+}
+
 // UploadFile uploads the file at filePath to Dropbox
 func UploadFile(filePath string) {
 	dropboxAccessToken := os.Getenv(DropboxAccessTokenEnv)
@@ -76,8 +91,11 @@ func UploadFile(filePath string) {
 		log.Println("Error on response.\n[ERRO] -", err)
 	}
 
+	var responseBody UploadFileResponse
 	body, _ := ioutil.ReadAll(resp.Body)
-	log.Println(string([]byte(body)))
+	err = json.Unmarshal(body, &responseBody)
+
+	log.Println(responseBody)
 }
 
 func createFolder() {
