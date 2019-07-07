@@ -115,11 +115,17 @@ func UploadFile(srcFilePath string, dstFilePath string) {
 		log.Println("Error on response.\n[ERRO] -", err)
 	}
 
-	var responseBody UploadFileResponse
 	body, _ := ioutil.ReadAll(resp.Body)
-	err = json.Unmarshal(body, &responseBody)
-
-	log.Println(responseBody)
+	switch resp.StatusCode {
+	case 200:
+		var responseBody UploadFileResponse
+		err = json.Unmarshal(body, &responseBody)
+		log.Printf("Successfully uploaded file: %v", responseBody)
+	case 400:
+		log.Printf("HTTP [%v] Error uploading file, response body: %v", resp.StatusCode, string(body))
+	default:
+		log.Printf("Unhandled HTTP error [%v] uploading file, response body: %v", resp.StatusCode, string(body))
+	}
 }
 
 func createFolder() {
