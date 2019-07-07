@@ -2,6 +2,7 @@ package dropbox
 
 import (
 	"encoding/json"
+	"fmt"
 	"io/ioutil"
 	"log"
 	"net/http"
@@ -63,6 +64,24 @@ type UploadFileResponse struct {
 	Size           uint64 `json:"size"`
 }
 
+// DropboxAPIArg is the request header passed to Dropbox containing info related to the action
+type DropboxAPIArg struct {
+	Path           string `json:"path"`
+	Mode           string `json:"mode"`
+	Mute           bool   `json:"mute"`
+	StrictConflict bool   `json:"strict_conflict"`
+}
+
+// "Dropbox-Api-Arg", "{\"path\": \"/testfileupload.txt\",\"mode\": \"overwrite\",	\"mute\": false,\"strict_conflict\": false}"
+func createDropboxAPIArg(filePath string) DropboxAPIArg {
+	return DropboxAPIArg{
+		Path:           filePath,
+		Mode:           "overwrite",
+		Mute:           false,
+		StrictConflict: false,
+	}
+}
+
 // UploadFile uploads the file at filePath to Dropbox
 func UploadFile(filePath string) {
 	dropboxAccessToken := os.Getenv(DropboxAccessTokenEnv)
@@ -79,9 +98,14 @@ func UploadFile(filePath string) {
 		log.Fatalf("Error creating new HTTP request: %v", err)
 	}
 
+	jsonDropboxAPIArg, err := json.Marshal(createDropboxAPIArg("/testfileupload.txt"))
+	if err != nil {
+		log.Fatalf("Error marshalling DropboxAPIArg into json: %v", err)
+	}
+
 	bearer := "Bearer " + dropboxAccessToken
 	req.Header.Add("Authorization", bearer)
-	req.Header.Add("Dropbox-Api-Arg", "{\"path\": \"/testfileupload.txt\",\"mode\": \"overwrite\",	\"mute\": false,\"strict_conflict\": false}")
+	req.Header.Add("Dropbox-Api-Arg", fmt.Sprintf("%s", jsonDropboxAPIArg))
 	req.Header.Add("Content-Type", "application/octet-stream")
 
 	// Send req using http Client
