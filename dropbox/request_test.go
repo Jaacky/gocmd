@@ -9,7 +9,7 @@ func TestCreateRequest(t *testing.T) {
 	testToken := "testToken"
 	testMethod := "testMethod"
 	testURL := "testURL"
-	testRequestBody := createNewRequestListFolder("what/is/going/on", true)
+	testRequestBody := createRequestListFolder("what/is/going/on", true)
 	jsonRequestBody, err := json.Marshal(testRequestBody)
 	if err != nil {
 		t.Errorf("Error creating JSON request body: %s", err)
@@ -39,7 +39,7 @@ func TestCreateRequest(t *testing.T) {
 		t.Errorf("Request body doesn't match, expected: %v, got: %v", *testRequestBody, requestBody)
 	}
 
-	testFalseRequestBody := createNewRequestListFolder("what/is/going/on/here", true)
+	testFalseRequestBody := createRequestListFolder("what/is/going/on/here", true)
 	// SANITY CHECK: Wrapping comparison in not to check if a random request body will equal expected
 	if !(*testFalseRequestBody != requestBody) {
 		t.Errorf("Unequal request body match, should not equal: %v, but got: %v", *testFalseRequestBody, requestBody)
