@@ -19,7 +19,7 @@ type requestListFolder struct {
 	Recursive bool   `json:"recursive"`
 }
 
-func createNewRequestListFolder(path string, recursive bool) *requestListFolder {
+func createRequestListFolder(path string, recursive bool) *requestListFolder {
 	return &requestListFolder{
 		Path:      path,
 		Recursive: recursive,
@@ -31,7 +31,7 @@ func ListContents() {
 	dropboxAccessToken := os.Getenv(DropboxAccessTokenEnv)
 	url := "https://api.dropboxapi.com/2/files/list_folder"
 
-	requestBody, err := json.Marshal(createNewRequestListFolder("", true))
+	requestBody, err := json.Marshal(createRequestListFolder("", true))
 	if err != nil {
 		log.Fatalln(err)
 	}
