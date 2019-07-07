@@ -4,6 +4,20 @@ import (
 	"testing"
 )
 
+func TestCreateRequestListFolder(t *testing.T) {
+	expectedPath := "/test/path/file.txt"
+	expectedRecursive := true
+
+	request := createRequestListFolder(expectedPath, expectedRecursive)
+
+	if request.Path != expectedPath {
+		t.Errorf("Path doesn't match. Expected: %v, got: %v\n", expectedPath, request.Path)
+	}
+
+	if request.Recursive != expectedRecursive {
+		t.Errorf("Recursive doesn't match. Expected: %v, got: %v\n", expectedRecursive, request.Recursive)
+	}
+}
 func TestCreateDropboxAPIArg(t *testing.T) {
 	expectedPath := "/test/path/file.txt"
 	expectedMode := "overwrite"
