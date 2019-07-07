@@ -83,11 +83,11 @@ func createDropboxAPIArg(filePath string) DropboxAPIArg {
 }
 
 // UploadFile uploads the file at filePath to Dropbox
-func UploadFile(filePath string) {
+func UploadFile(srcFilePath string, dstFilePath string) {
 	dropboxAccessToken := os.Getenv(DropboxAccessTokenEnv)
 	url := "https://content.dropboxapi.com/2/files/upload"
 
-	f, err := os.Open(filePath)
+	f, err := os.Open(srcFilePath)
 	if err != nil {
 		log.Fatalf("Failed to open file to upload: %v", err)
 	}
@@ -98,7 +98,7 @@ func UploadFile(filePath string) {
 		log.Fatalf("Error creating new HTTP request: %v", err)
 	}
 
-	jsonDropboxAPIArg, err := json.Marshal(createDropboxAPIArg("/testfileupload.txt"))
+	jsonDropboxAPIArg, err := json.Marshal(createDropboxAPIArg(dstFilePath))
 	if err != nil {
 		log.Fatalf("Error marshalling DropboxAPIArg into json: %v", err)
 	}
